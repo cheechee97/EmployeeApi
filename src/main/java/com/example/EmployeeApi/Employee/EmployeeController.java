@@ -6,6 +6,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,8 +34,8 @@ public class EmployeeController implements EmployeeDAO{
     RowMapper<Employee> rowMapper = (rs, rowNum) -> { // resultSet and row Number
 
         Employee employee = new Employee();
-        employee.setEmployeeId(rs.getInt("id"));
-        employee.setEmployeeName(rs.getString("name"));
+        employee.setEmployeeId(rs.getInt("employeeId"));
+        employee.setEmployeeName(rs.getString("employeeName"));
         employee.setEmployeeAge(rs.getInt("age"));
         employee.setEmployeeEMail(rs.getString("email_address"));
 
@@ -50,18 +51,23 @@ public class EmployeeController implements EmployeeDAO{
         return jdbcTemplate.query(sql, rowMapper);
     }
 
+
     @Override
-    @GetMapping(path = "{employeeId}")
-    public Optional<Employee> getEmployeeById(int employeeId) {
-        String sql = "select * from employees where id = ?";
-        Optional<Employee> employee = null;
+    @GetMapping(path = "{id}")
+    public Optional<Employee> getEmployeeById( @PathVariable("id") int employeeId) {
+        System.out.println("--------------------------------");
+        System.out.println("Employee Id: " + Long.toString(employeeId));
+        System.out.println("--------------------------------");
+        String sql = "select employeeName, age, email_address from dbo.employees where employeeId = ?";
+        Employee employee = null;
         try {
-            employee = jdbcTemplate.query(sql, rowMapper , employeeId).stream().findFirst();
+            employee = jdbcTemplate.queryForObject(sql,new Object[] {employeeId}, rowMapper);
         } catch (DataAccessException ex) {
+            System.out.println(ex);
             log.info("Employee not found: " + employeeId);
         }
 
-        return employee;
+        return Optional.ofNullable(employee);
     }
 
     @Override
