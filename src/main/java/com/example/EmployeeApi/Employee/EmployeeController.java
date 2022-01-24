@@ -60,7 +60,7 @@ public class EmployeeController implements EmployeeDAO{
 
     @Override
     @PostMapping("/add")
-    public void addEmployee(@RequestBody Employee employee) {
+    public void addEmployeeById(@RequestBody Employee employee) {
         String sql = "INSERT INTO employees(employeeName, age, email_address) values (?,?,?)";
         int insert = jdbcTemplate.update(sql, employee.getEmployeeName(), employee.getEmployeeAge(), employee.getEmployeeEMail());
         if (insert == 1) {
@@ -70,7 +70,7 @@ public class EmployeeController implements EmployeeDAO{
 
     @Override
     @PutMapping("/update/{id}")
-    public void updateEmployee(@RequestBody Employee employee, @PathVariable("id") int employeeId) {
+    public void updateEmployeeById(@RequestBody Employee employee, @PathVariable("id") int employeeId) {
         String sql = "update employees set employeeName = ?, age = ? , email_address = ? where employeeId = ?";
         int update = jdbcTemplate.update(sql, employee.getEmployeeName(), employee.getEmployeeAge(), employee.getEmployeeEMail(), employeeId);
         if (update == 1) {
@@ -80,7 +80,7 @@ public class EmployeeController implements EmployeeDAO{
 
     @Override
     @DeleteMapping("/delete/{id}")
-    public void deleteEmployee(@PathVariable("id") int employeeId) {
+    public void deleteEmployeeById(@PathVariable("id") int employeeId) {
         String sql = "delete from employees where employeeId = ?";
         int delete = jdbcTemplate.update(sql, employeeId);
         if (delete == 1) {

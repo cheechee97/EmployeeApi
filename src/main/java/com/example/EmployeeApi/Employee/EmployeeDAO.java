@@ -14,7 +14,7 @@ public interface EmployeeDAO {
 
     Optional<Employee> getEmployeeById(@PathVariable("employeeId") int employeeId);
 
-    void addEmployee(Employee employee);
-    void updateEmployee(Employee employee, int employeeId);
-    void deleteEmployee(int employeeId);
+    void addEmployeeById(Employee employee);
+    void updateEmployeeById(Employee employee, int employeeId);
+    void deleteEmployeeById(int employeeId);
 }
