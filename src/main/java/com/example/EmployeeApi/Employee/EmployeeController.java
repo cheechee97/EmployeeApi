@@ -14,12 +14,6 @@ import java.util.Optional;
 @RequestMapping("api/employees")
 public class EmployeeController implements EmployeeDAO{
 
-//    private static final List<Employee> EMPLOYEES = Arrays.asList(
-//            new Employee(1, "Scarlett", 20, "scarlett20@gmail.com" ),
-//            new Employee(2, "Wilson", 25, "wilson25@gmail.com" ),
-//            new Employee(3, "Jeremy", 27, "jeremy27@gmail.com" )
-//    );
-
     private JdbcTemplate jdbcTemplate;
     private static final Logger log = LoggerFactory.getLogger(EmployeeController.class);
 
