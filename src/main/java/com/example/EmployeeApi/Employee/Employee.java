@@ -15,6 +15,12 @@ public class Employee {
         this.employeeEMail = employeeEMail;
     }
 
+    public Employee(String employeeName, Integer employeeAge, String employeeEMail) {
+        this.employeeName = employeeName;
+        this.employeeAge = employeeAge;
+        this.employeeEMail = employeeEMail;
+    }
+
     public Employee() {
 
     }

@@ -5,10 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -55,15 +52,12 @@ public class EmployeeController implements EmployeeDAO{
     @Override
     @GetMapping(path = "{id}")
     public Optional<Employee> getEmployeeById( @PathVariable("id") int employeeId) {
-        System.out.println("--------------------------------");
-        System.out.println("Employee Id: " + Long.toString(employeeId));
-        System.out.println("--------------------------------");
-        String sql = "select employeeName, age, email_address from dbo.employees where employeeId = ?";
+        String sql = "select employeeId, employeeName, age, email_address from employees where employeeId = ?";
         Employee employee = null;
         try {
             employee = jdbcTemplate.queryForObject(sql,new Object[] {employeeId}, rowMapper);
         } catch (DataAccessException ex) {
-            System.out.println(ex);
+            log.error(ex.toString());
             log.info("Employee not found: " + employeeId);
         }
 
@@ -71,17 +65,32 @@ public class EmployeeController implements EmployeeDAO{
     }
 
     @Override
-    public void addEmployee(Employee employee) {
-
+    @PostMapping("/add")
+    public void addEmployee(@RequestBody Employee employee) {
+        String sql = "INSERT INTO employees(employeeName, age, email_address) values (?,?,?)";
+        int insert = jdbcTemplate.update(sql, employee.getEmployeeName(), employee.getEmployeeAge(), employee.getEmployeeEMail());
+        if (insert == 1) {
+            log.info("New employee added !");
+        }
     }
 
     @Override
-    public void updateEmployee(Employee employee, int employeeId) {
-
+    @PutMapping("/update/{id}")
+    public void updateEmployee(@RequestBody Employee employee, @PathVariable("id") int employeeId) {
+        String sql = "update employees set employeeName = ?, age = ? , email_address = ? where employeeId = ?";
+        int update = jdbcTemplate.update(sql, employee.getEmployeeName(), employee.getEmployeeAge(), employee.getEmployeeEMail(), employeeId);
+        if (update == 1) {
+            log.info("Employee ( ID : " + Integer.toString(employeeId) + " )  has updated !");
+        }
     }
 
     @Override
-    public void deleteEmployee(int employeeId) {
-
+    @DeleteMapping("/delete/{id}")
+    public void deleteEmployee(@PathVariable("id") int employeeId) {
+        String sql = "delete from employees where employeeId = ?";
+        int delete = jdbcTemplate.update(sql, employeeId);
+        if (delete == 1) {
+            log.info("Employee ( ID: " + Integer.toString(employeeId) + " ) has deleted !");
+        } 
     }
 }
